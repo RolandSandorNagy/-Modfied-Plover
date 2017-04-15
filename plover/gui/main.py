@@ -27,6 +27,10 @@ from plover.gui.paper_tape import StrokeDisplayDialog
 from plover.gui.suggestions import SuggestionsDisplayDialog
 from plover import log
 
+""" MOCKING COMES HERE """
+from plover.gui.ime_connection import ImeConnection
+""" ------------------ """
+
 from plover import __name__ as __software_name__
 from plover import __version__
 from plover import __copyright__
@@ -99,6 +103,11 @@ class MainFrame(wx.Frame):
 
     def __init__(self, config):
         self.config = config
+
+        """ MOCKING COMES HERE """
+        self.ime_connection = ImeConnection(self)
+        self.ime_connection.start()
+        """ ------------------ """
 
         # Note: don't set position from config, since it's not yet loaded.
         wx.Frame.__init__(self, None, title=self.TITLE,
@@ -247,6 +256,12 @@ class MainFrame(wx.Frame):
             log.error('engine initialization failed', exc_info=True)
             self._show_config_dialog()
 
+    """ MOCKING COMES HERE """
+    def getNewConnection(self):
+        self.ime_connection = ImeConnection(self)
+        self.ime_connection.start()
+        """ ------------------ """
+
     def _reconnect(self):
         try:
             app.reset_machine(self.steno_engine, self.config)
@@ -254,19 +269,11 @@ class MainFrame(wx.Frame):
             log.error('machine reset failed', exc_info=True)
 
     """ MOCKING COMES HERE """
-    def connectToServer(self, msg):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_address = ('localhost', 12345)
-        sock.connect(server_address)
-        try:                
-            sock.sendto(msg.encode('utf-8'), server_address)
-        finally:
-            print >>sys.stderr, 'closing socket\n'
-            sock.close()
-
     def _echo(self, event=None):
         print 'PLOVER:ECHO'
-        self.connectToServer('PLOVER:ECHO')
+        # self.ime_connection.sendMsg('PLOVER:ECHO')
+        self.ime_connection.setMsg('PLOVER:ECHO')
+        self.ime_connection.setHasMsg()
         """ -------------- """
 
     def consume_command(self, command):
