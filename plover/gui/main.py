@@ -9,6 +9,7 @@ resumes stenotype translation and allows for application configuration.
 
 """
 
+import socket
 import sys
 import os
 import wx
@@ -92,6 +93,9 @@ class MainFrame(wx.Frame):
     COMMAND_CONFIGURE = 'CONFIGURE'
     COMMAND_FOCUS = 'FOCUS'
     COMMAND_QUIT = 'QUIT'
+    """ MOCKING COMES HERE """
+    COMMAND_ECHO = 'ECHO'
+    """ ------------------ """
 
     def __init__(self, config):
         self.config = config
@@ -249,7 +253,24 @@ class MainFrame(wx.Frame):
         except Exception:
             log.error('machine reset failed', exc_info=True)
 
+    """ MOCKING COMES HERE """
+    def connectToServer(self, msg):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_address = ('localhost', 12345)
+        sock.connect(server_address)
+        try:                
+            sock.sendto(msg.encode('utf-8'), server_address)
+        finally:
+            print >>sys.stderr, 'closing socket\n'
+            sock.close()
+
+    def _echo(self, event=None):
+        print 'PLOVER:ECHO'
+        self.connectToServer('PLOVER:ECHO')
+        """ -------------- """
+
     def consume_command(self, command):
+        print command
         # The first commands can be used whether plover has output enabled or not.
         if command == self.COMMAND_RESUME:
             wx.CallAfter(self.steno_engine.set_is_running, True)
@@ -261,7 +282,11 @@ class MainFrame(wx.Frame):
         elif command == self.COMMAND_QUIT:
             wx.CallAfter(self._quit)
             return True
-
+            """ MOCKING COMES HERE """
+        elif command == self.COMMAND_ECHO:
+            print wx.CallAfter(self._echo)
+            return True
+            """ ------------------ """
         if not self.steno_engine.is_running:
             return False
 

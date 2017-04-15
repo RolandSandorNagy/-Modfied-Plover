@@ -128,6 +128,7 @@ class SuggestionsDisplayDialog(wx.Dialog):
     def show_suggestions(self, suggestion_list):
 
         def connectToServer( msg, cat ):
+            return
             # Create a TCP/IP socket
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             # Connect the socket to the port where the server is listening

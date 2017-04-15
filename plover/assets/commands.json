@@ -10,6 +10,7 @@
 "PHRO*F": "{PLOVER:SUSPEND}",
 "PHROLG": "{PLOVER:TOGGLE}",
 "PHROPB": "{PLOVER:RESUME}",
+"PHROTS": "{PLOVER:ECHO}",
 "PW*FP": "{#BackSpace}",
 "PW-FP": "{#BackSpace}",
 "R*R": "{#Return}{^}",

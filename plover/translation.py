@@ -168,6 +168,7 @@ class Translator(object):
 
     def translate(self, stroke):
         """Process a single stroke."""
+        # print 'stroke: %s' % stroke
         self._translate_stroke(stroke)
         self._resize_translations()
 
@@ -285,6 +286,7 @@ class Translator(object):
             if t is not None:
                 do.append(t)
                 undo.extend(t.replaced)
+        # print 'self._state.translations: %s' % self._state.translations
         del self._state.translations[len(self._state.translations) - len(undo):]
         self._output(undo, do, self._state.last())
         if add_to_history:
@@ -293,6 +295,7 @@ class Translator(object):
     def _find_translation(self, stroke, mapping):
         t = self._find_translation_helper(stroke)
         if t:
+            # print "1_find_translation returns: %s" % t
             return t
 
         if mapping == '{*?}':
@@ -312,6 +315,7 @@ class Translator(object):
                 t = Translation([stroke], ' '.join(english))
                 t.replaced = replaced
                 t.is_retrospective_command = True
+                # print "2_find_translation returns: %s" % t
                 return t
 
         if mapping == '{*!}':
@@ -331,13 +335,17 @@ class Translator(object):
                 t = Translation([stroke], '{^~|^}'.join(english))
                 t.replaced = replaced
                 t.is_retrospective_command = True
+                # print "3_find_translation returns: %s" % t
                 return t
 
         if mapping is not None:  # Could be the empty string.
+            # print "_find_translation returns: %s" % Translation([stroke], mapping)
             return Translation([stroke], mapping)
         t = self._find_translation_helper(stroke, system.SUFFIX_KEYS)
         if t:
+            # print "4_find_translation returns: %s" % t
             return t
+        # print "_find_translation returns: %s" % Translation([stroke], self._lookup([stroke], system.SUFFIX_KEYS))
         return Translation([stroke], self._lookup([stroke], system.SUFFIX_KEYS))
 
     def _find_translation_helper(self, stroke, suffixes=()):

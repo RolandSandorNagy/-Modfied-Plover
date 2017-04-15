@@ -86,6 +86,8 @@ class LookupDialog(wx.Dialog):
 
     def on_translation_change(self, event):
         translation = event.GetString()
+        print ''
+        print 'on_translation_change translation: %s' % translation
         self.listbox.Clear()
         if translation:
             suggestions = self.engine.get_suggestions(
@@ -95,8 +97,14 @@ class LookupDialog(wx.Dialog):
                 for suggestion, strokes in suggestions:
                     self.listbox.Append(escape_translation(suggestion))
                     entries = ('/'.join(x) for x in strokes)
+                    # print 'suggestion: %s' % suggestion
+                    stroke = ''
                     for entry in entries:
                         self.listbox.Append('    %s' % (entry))
+                        stroke += '    %s' + entry
+                    # print 'strokes: %s' % strokes
+                    # print 'stroke: %s' % stroke 
+                    # print ''
                 self.listbox.EnsureVisible(0)
             else:
                 self.listbox.Append('No entries')

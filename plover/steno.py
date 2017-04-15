@@ -36,6 +36,7 @@ def normalize_stroke(stroke):
              stroke = stroke[:-1]
         elif letters & system.IMPLICIT_HYPHENS:
             stroke = stroke.replace('-', '')
+    # print stroke
     return stroke
 
 def normalize_steno(strokes_string):
